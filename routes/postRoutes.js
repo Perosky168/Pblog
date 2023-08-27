@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.route("/")
   .get(PostController.getAllPosts)
-  .post(protect, PostController.createPOst)
+  .post(protect, PostController.setUserId, PostController.createPOst)
 
 router.route("/:id")
   .get(PostController.getOnePOst)

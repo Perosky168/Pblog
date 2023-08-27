@@ -16,7 +16,6 @@ const userRouter = require('./routes/userRoutes');
 
 const app = express();
 
-
 app.enable("trust proxy");
 app.use(cors({}))
 app.use(session({
@@ -30,6 +29,11 @@ app.use(session({
     maxAge: 1000 * 60 * 60 
   }
 }))
+
+app.get('/api', async (req, res) => {
+  // const posts = await db.post.findMany();
+  res.json({ 'hello': 'peter'})
+});
 
 app.use(express.json());
 

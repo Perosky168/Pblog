@@ -15,10 +15,6 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, 'Please provide a valid email']
   },
-  username: {
-    type: String,
-    unique: true,
-  },
   password: {
     type: String,
     require: [true, "user must have a password"],
@@ -35,6 +31,10 @@ const userSchema = new mongoose.Schema({
       },
       message: 'Password are not the same!',
     },
+  },
+  posts: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Post",
   },
   passwordChangedAt: Date,
   passwordResetToken: String,
@@ -67,14 +67,6 @@ userSchema.pre(/^find/, function (next) {
   next();
 });
 
-
-/**
- * custom document instance methods
- *
- * @param {String} plainTextPassword - User's current entered password
- * @param {String} hashPassword - User password from database
- * @returns Boolean
- */
 userSchema.methods.comparePassword = async function (
   plainTextPassword,
   hashPassword
@@ -82,11 +74,7 @@ userSchema.methods.comparePassword = async function (
   return await bcrypt.compare(plainTextPassword, hashPassword);
 };
 
-/**
- * Check if user changed password after the token was issued
- * @param {Number} tokenIssuedAt - Generated jwts will include an iat (issued at)
- * @returns Boolean
- */
+
 userSchema.methods.changedPasswordAfter = function (tokenIssuedAt) {
   if (this.passwordChangedAt) {
     const changedTimestamp = new Date(this.passwordChangedAt).getTime() / 1000;
@@ -98,10 +86,7 @@ userSchema.methods.changedPasswordAfter = function (tokenIssuedAt) {
   return false;
 };
 
-/**
- * Generate reset token to reset password
- * @returns reset token
- */
+
 userSchema.methods.generatePasswordResetToken = function () {
   // simple reset Token for sending to user's mail
   const resetToken = crypto.randomBytes(32).toString('hex');

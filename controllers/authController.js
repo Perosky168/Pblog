@@ -17,7 +17,6 @@ exports.signUp = catchAsync(async (req, res, next) => {
     status: 'success',
     data: newUser,
   });
-  
 })
 
 exports.login = catchAsync(async (req, res, next) => {
